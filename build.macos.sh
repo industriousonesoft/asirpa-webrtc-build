@@ -21,13 +21,12 @@ set -ex
 
 cd $(dirname $0)
 
-#read wevrtc versions
-source VERSION
-
 SCRIPT_DIR=$(pwd)
 PACKAGE_NAME=macos
 BUILD_DIR="${SCRIPT_DIR}/_build/${PACKAGE_NAME}"
-PACKAGE_DIR="${SCRIPT_DIR}/_package/${PACKAGE_NAME}"
+
+#read wevrtc versions
+source $SCRIPT_DIR/VERSION
 
 pushd $SOURCE_DIR/webrtc/src
 
@@ -53,7 +52,7 @@ pushd $BUILD_DIR/webrtc/obj
 	/usr/bin/ar -rc $BUILD_DIR/webrtc/libwebrtc.a `find . -name '*.o'`
 popd
 
-./scripts/package_webrtc.sh $SOURCE_DIR $BUILD_DIR $PACKAGE_DIR $SCRIPT_DIR/VERSION
+./scripts/package_webrtc.sh $SOURCE_DIR $BUILD_DIR $SCRIPT_DIR/VERSION
 
 
 
