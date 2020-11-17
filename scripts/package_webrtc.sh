@@ -1,23 +1,27 @@
 #!/bin/bash
 
-if [ $# -lt 3 ]; then
-  echo "$0 <source_dir> <build_dir> <version_file> [<additional_build_name>...]"
+if [ $# -lt 4 ]; then
+  echo "$0 <plateform name> <source_dir> <build_dir> <version_file> [<additional_build_name>...]"
   exit 1
 fi
 
 set -ex
 
-SOURCE_DIR=$1
-BUILD_DIR=$2
-VERSION_FILE=$3
-shift 3
+PLATFORM_NAME=$1
+SOURCE_DIR=$2
+BUILD_DIR=$3
+VERSION_FILE=$4
+shift 4
 ADDITIONAL_BUILD_NAMES="$*"
 
 rm -rf $BUILD_DIR/package/webrtc
 mkdir -p $BUILD_DIR/package/webrtc/lib
 mkdir -p $BUILD_DIR/package/webrtc/include
 
-# webrtc头文件
+# 收集webrtc头文件
+#-a: --archive: archive mode
+#-m: --prune-empty-dirs
+#-v: --verbose
 rsync -amv '--include=*/' '--include=*.h' '--include=*.hpp' '--exclude=*' $SOURCE_DIR/webrtc/src/. $BUILD_DIR/package/webrtc/include/.
 
 # libwebrtc.a
@@ -75,5 +79,5 @@ pushd $SOURCE_DIR/webrtc/src/tools
 popd
 
 pushd $BUILD_DIR/package
-  tar czf ./webrtc_$WEBRTC_READABLE_VERSION.tar.gz webrtc
+  tar czf ./webrtc.$PLATFORM_NAME.tar.gz webrtc
 popd
